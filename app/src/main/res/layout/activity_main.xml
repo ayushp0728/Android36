@@ -11,4 +11,16 @@
         android:layout_height="wrap_content"
         android:text="Hello Albums!"
         android:textSize="26sp" />
+
+    <Button
+        android:id="@+id/btnAddAlbum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Album" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerAlbums"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 </LinearLayout>
