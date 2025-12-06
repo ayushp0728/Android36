@@ -6,6 +6,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.android36java.model.Album;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.LayoutInflater;
 
 import java.util.List;
 
@@ -16,6 +21,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     public interface OnAlbumClickListener {
         void onAlbumClick(int position);
     }
+    public interface OnRenameListener { void onRename(int pos); }
+    public interface OnDeleteListener { void onDelete(int pos); }
+
+    private OnRenameListener renameListener;
+    private OnDeleteListener deleteListener;
+
+    public void setOnRenameListener(OnRenameListener l) { renameListener = l; }
+    public void setOnDeleteListener(OnDeleteListener l) { deleteListener = l; }
 
 
     public AlbumAdapter(List<Album> albums) {
@@ -25,7 +38,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     @Override
     public AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
+                .inflate(R.layout.item_album, parent, false);
         return new AlbumViewHolder(v);
     }
     public void setOnAlbumClickListener(OnAlbumClickListener listener) {
@@ -35,12 +48,19 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     @Override
     public void onBindViewHolder(AlbumViewHolder holder, int pos) {
         Album a = albums.get(pos);
-        holder.textView.setText(a.getName());
+        holder.tvName.setText(a.getName());
+
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onAlbumClick(holder.getAdapterPosition());
-            }
+            if (listener != null) listener.onAlbumClick(pos);
         });
+
+        if (renameListener != null) {
+            holder.btnRename.setOnClickListener(v -> renameListener.onRename(pos));
+        }
+
+        if (deleteListener != null) {
+            holder.btnDelete.setOnClickListener(v -> deleteListener.onDelete(pos));
+        }
     }
 
     @Override
@@ -49,10 +69,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     }
 
     static class AlbumViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView tvName;
+        ImageButton btnRename;
+        ImageButton btnDelete;
+
         public AlbumViewHolder(View v) {
             super(v);
-            textView = v.findViewById(android.R.id.text1);
+            tvName = v.findViewById(R.id.tvAlbumName);
+            btnRename = v.findViewById(R.id.btnRename);
+            btnDelete = v.findViewById(R.id.btnDelete);
         }
     }
 }
