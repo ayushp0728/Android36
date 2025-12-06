@@ -11,6 +11,8 @@ import android.content.Intent;
 import com.example.android36java.model.Album;
 import com.example.android36java.model.DataStore;
 import com.example.android36java.model.Photo;
+import android.app.AlertDialog;
+
 
 import java.util.ArrayList;
 
@@ -19,6 +21,11 @@ public class AlbumActivity extends AppCompatActivity {
     private Album album;
     private PhotoAdapter photoAdapter;
     private static final int REQUEST_PICK = 1;
+    private void deletePhoto(int pos) {
+        album.getPhotos().remove(pos);
+        DataStore.getInstance().save(this);
+        photoAdapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,9 @@ public class AlbumActivity extends AppCompatActivity {
         rv.setLayoutManager(new GridLayoutManager(this, 3));
         photoAdapter = new PhotoAdapter(album.getPhotos());
         rv.setAdapter(photoAdapter);
+        photoAdapter.setOnPhotoClickListener(pos -> {
+            showPhotoOptionsDialog(pos);
+        });
 
         Button add = findViewById(R.id.btnAddPhoto);
         add.setOnClickListener(v -> {
@@ -55,5 +65,54 @@ public class AlbumActivity extends AppCompatActivity {
                 photoAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    private void showPhotoOptionsDialog(int pos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Photo Options");
+
+        String[] options = {"View Photo", "Delete Photo", "Move Photo"};
+
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    // For Person B to handle later:
+                    // open PhotoViewActivity (not implemented yet)
+                    break;
+
+                case 1:
+                    deletePhoto(pos);
+                    break;
+
+                case 2:
+                    movePhoto(pos);
+                    break;
+            }
+        });
+
+        builder.show();
+    }
+
+    private void movePhoto(int pos) {
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle("Move photo to:");
+
+        ArrayList<Album> all = DataStore.getInstance().getAlbums();
+        ArrayList<String> names = new ArrayList<>();
+        for (Album a : all) names.add(a.getName());
+
+        b.setItems(names.toArray(new String[0]), (dialog, which) -> {
+            Photo photo = album.getPhotos().get(pos);
+            Album target = all.get(which);
+
+            if (target != album) {
+                target.addPhoto(photo);
+                album.removePhoto(photo);
+                DataStore.getInstance().save(this);
+                photoAdapter.notifyDataSetChanged();
+            }
+        });
+
+        b.show();
     }
 }

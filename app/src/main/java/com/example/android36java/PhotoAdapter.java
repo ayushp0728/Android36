@@ -20,6 +20,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         this.photos = photos;
     }
 
+    public interface OnPhotoClickListener {
+        void onPhotoClick(int pos);
+    }
+
+    private OnPhotoClickListener clickListener;
+
+    public void setOnPhotoClickListener(OnPhotoClickListener listener) {
+        this.clickListener = listener;
+    }
+
     @Override
     public PhotoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
@@ -33,6 +43,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
 
         Uri uri = Uri.parse(p.getUriString());
         holder.imageView.setImageURI(uri);
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onPhotoClick(position);
+            }
+        });
     }
 
     @Override
