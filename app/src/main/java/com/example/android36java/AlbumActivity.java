@@ -12,6 +12,7 @@ import com.example.android36java.model.Album;
 import com.example.android36java.model.DataStore;
 import com.example.android36java.model.Photo;
 import android.app.AlertDialog;
+import android.net.Uri;
 
 
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class AlbumActivity extends AppCompatActivity {
             showPhotoOptionsDialog(pos);
         });
 
+
+
         Button add = findViewById(R.id.btnAddPhoto);
         add.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -60,8 +63,23 @@ public class AlbumActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_PICK && resultCode == RESULT_OK) {
             if (data != null) {
-                album.addPhoto(new Photo(data.getData().toString()));
+
+                Uri uri = data.getData();
+
+                // 1️⃣ take persistent read access
+                final int flags = data.getFlags()
+                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                getContentResolver().takePersistableUriPermission(uri, flags);
+
+                // 2️⃣ save photo
+                album.getPhotos().add(new Photo(uri.toString()));
+
+                // 3️⃣ persist to storage
                 DataStore.getInstance().save(this);
+
+                // 4️⃣ update UI
                 photoAdapter.notifyDataSetChanged();
             }
         }

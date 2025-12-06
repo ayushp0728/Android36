@@ -5,20 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Represents a photo using a URI string.
- * Captions are not required in the Android assignment
- * — the filename will stand for caption.
- * Tags are person/location only.
- */
 public class Photo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // URI string pointing to content:// or external file
-    private String uriString;
-
-    // No caption/date needed for Android assignment
+    private String uriString;            // store content URI as string
     private List<Tag> tags = new ArrayList<>();
 
     public Photo(String uriString) {
@@ -34,19 +25,16 @@ public class Photo implements Serializable {
     }
 
     /**
-     * Adds a tag.  Tag type must be person or location.
-     * Values stored lowercase for case-insensitive matching.
+     * Adds a tag (lowercase) only if type is person or location.
      */
     public boolean addTag(Tag tag) {
-        // Normalize
         String type = tag.getType().toLowerCase(Locale.ROOT);
         String value = tag.getValue().toLowerCase(Locale.ROOT);
 
         if (!type.equals(Tag.PERSON) && !type.equals(Tag.LOCATION)) {
-            return false;  // invalid tag type
+            return false;
         }
 
-        // Prevent duplicates
         for (Tag t : tags) {
             if (t.getType().equalsIgnoreCase(type)
                     && t.getValue().equalsIgnoreCase(value)) {
@@ -66,6 +54,6 @@ public class Photo implements Serializable {
 
     @Override
     public String toString() {
-        return uriString;   // will be displayed using filename in UI
+        return uriString;
     }
 }
