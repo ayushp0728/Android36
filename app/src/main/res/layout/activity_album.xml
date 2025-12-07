@@ -72,7 +72,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/rounded_button"
                 android:text="+"
-                android:textSize="20dp"
+                android:textSize="10dp"
                 android:gravity="center" />
         </LinearLayout>
 

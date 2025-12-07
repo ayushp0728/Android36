@@ -40,24 +40,24 @@
         <!-- Rename -->
         <ImageButton
             android:id="@+id/btnRename"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:background="@drawable/rounded_button"
             android:src="@android:drawable/ic_menu_edit"
             android:scaleType="centerInside"
-            android:padding="3dp"
+            android:padding="2dp"
             android:adjustViewBounds="true"
             android:contentDescription="Rename album" />
 
         <!-- Delete -->
         <ImageButton
             android:id="@+id/btnDelete"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:background="@drawable/rounded_button"
             android:src="@android:drawable/ic_menu_delete"
             android:scaleType="centerInside"
-            android:padding="3dp"
+            android:padding="2dp"
             android:adjustViewBounds="true"
             android:contentDescription="Delete album" />
 

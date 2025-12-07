@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android36java.model.Album;
 import com.example.android36java.model.DataStore;
@@ -23,6 +22,7 @@ public class AlbumActivity extends AppCompatActivity {
     private Album album;
     private PhotoAdapter photoAdapter;
     private static final int REQUEST_PICK = 1;
+    private int albumIndex;
 
     private void deletePhoto(int pos) {
         album.getPhotos().remove(pos);
@@ -35,13 +35,11 @@ public class AlbumActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
 
-        int index = getIntent().getIntExtra("albumIndex", -1);
-        album = DataStore.getInstance().getAlbums().get(index);
+        albumIndex = getIntent().getIntExtra("albumIndex", -1);
+        album = DataStore.getInstance().getAlbums().get(albumIndex);
 
-        // Optional: keep action bar title in addition to header text
         setTitle(album.getName());
 
-        // Set the header TextView to the album's name
         TextView header = findViewById(R.id.tvAlbumHeader);
         header.setText(album.getName());
 
@@ -50,17 +48,16 @@ public class AlbumActivity extends AppCompatActivity {
         photoAdapter = new PhotoAdapter(album.getPhotos());
         rv.setAdapter(photoAdapter);
 
-        // Click photo -> open photo (stub for now)
+        // Open PhotoViewActivity when a photo is clicked
         photoAdapter.setOnPhotoClickListener(pos -> {
-            // TODO: later open PhotoViewActivity with this photo
-            // For now, intentionally does nothing.
+            Intent intent = new Intent(AlbumActivity.this, PhotoViewActivity.class);
+            intent.putExtra("albumIndex", albumIndex);
+            intent.putExtra("photoIndex", pos);
+            startActivity(intent);
         });
 
-        // Click trash icon -> delete photo
+        // Hook delete icon to deletePhoto()
         photoAdapter.setOnPhotoDeleteListener(this::deletePhoto);
-
-        // Click move icon -> move photo dialog
-        photoAdapter.setOnPhotoMoveListener(this::movePhoto);
 
         Button add = findViewById(R.id.btnAddPhoto);
         add.setOnClickListener(v -> {
@@ -80,54 +77,52 @@ public class AlbumActivity extends AppCompatActivity {
 
                 Uri uri = data.getData();
 
-                // 1️⃣ take persistent read access
                 final int flags = data.getFlags()
                         & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                 getContentResolver().takePersistableUriPermission(uri, flags);
 
-                // 2️⃣ save photo
                 album.getPhotos().add(new Photo(uri.toString()));
-
-                // 3️⃣ persist to storage
                 DataStore.getInstance().save(this);
-
-                // 4️⃣ update UI
                 photoAdapter.notifyDataSetChanged();
             }
         }
     }
 
+    // movePhoto(...) and showPhotoOptionsDialog(...) can stay if you still
+    // use them from a move icon elsewhere; otherwise they’re safe to delete.
     private void movePhoto(int pos) {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle("Move photo to:");
 
         ArrayList<Album> all = DataStore.getInstance().getAlbums();
-        ArrayList<Album> choices = new ArrayList<>();
         ArrayList<String> names = new ArrayList<>();
-
-        // Exclude current album from move targets
         for (Album a : all) {
-            if (a != album) {
-                choices.add(a);
+            if (a != album) {        // exclude current album from options
                 names.add(a.getName());
             }
         }
 
-        if (choices.isEmpty()) {
-            Toast.makeText(this, "No other albums to move to", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         b.setItems(names.toArray(new String[0]), (dialog, which) -> {
             Photo photo = album.getPhotos().get(pos);
-            Album target = choices.get(which);
 
-            target.addPhoto(photo);
-            album.removePhoto(photo);
-            DataStore.getInstance().save(this);
-            photoAdapter.notifyDataSetChanged();
+            // find target by name (since we filtered)
+            Album target = null;
+            String chosenName = names.get(which);
+            for (Album a : all) {
+                if (a.getName().equals(chosenName)) {
+                    target = a;
+                    break;
+                }
+            }
+
+            if (target != null && target != album) {
+                target.addPhoto(photo);
+                album.removePhoto(photo);
+                DataStore.getInstance().save(this);
+                photoAdapter.notifyDataSetChanged();
+            }
         });
 
         b.show();
