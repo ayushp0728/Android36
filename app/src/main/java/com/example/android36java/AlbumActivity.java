@@ -4,16 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
-import android.content.Intent;
+import android.widget.TextView;
 
 import com.example.android36java.model.Album;
 import com.example.android36java.model.DataStore;
 import com.example.android36java.model.Photo;
-
-import android.app.AlertDialog;
-import android.net.Uri;
 
 import java.util.ArrayList;
 
@@ -37,21 +37,20 @@ public class AlbumActivity extends AppCompatActivity {
         int index = getIntent().getIntExtra("albumIndex", -1);
         album = DataStore.getInstance().getAlbums().get(index);
 
+        // Optional: keep action bar title in addition to header text
         setTitle(album.getName());
+
+        // 🔹 Set the header TextView to the album's name
+        TextView header = findViewById(R.id.tvAlbumHeader);
+        header.setText(album.getName());
 
         RecyclerView rv = findViewById(R.id.recyclerPhotos);
         rv.setLayoutManager(new GridLayoutManager(this, 3));
         photoAdapter = new PhotoAdapter(album.getPhotos());
         rv.setAdapter(photoAdapter);
 
-        // click on photo card -> options dialog (view/delete/move)
         photoAdapter.setOnPhotoClickListener(pos -> {
             showPhotoOptionsDialog(pos);
-        });
-
-        // click on trash icon -> delete immediately
-        photoAdapter.setOnPhotoDeleteListener(pos -> {
-            deletePhoto(pos);
         });
 
         Button add = findViewById(R.id.btnAddPhoto);
