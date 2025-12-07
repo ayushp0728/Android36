@@ -32,8 +32,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         void onPhotoDelete(int pos);
     }
 
+    // Click move icon
+    public interface OnPhotoMoveListener {
+        void onPhotoMove(int pos);
+    }
+
     private OnPhotoClickListener clickListener;
     private OnPhotoDeleteListener deleteListener;
+    private OnPhotoMoveListener moveListener;
 
     public void setOnPhotoClickListener(OnPhotoClickListener listener) {
         this.clickListener = listener;
@@ -41,6 +47,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
 
     public void setOnPhotoDeleteListener(OnPhotoDeleteListener listener) {
         this.deleteListener = listener;
+    }
+
+    public void setOnPhotoMoveListener(OnPhotoMoveListener listener) {
+        this.moveListener = listener;
     }
 
     @Override
@@ -87,6 +97,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
                 }
             });
         }
+
+        // move photo when clicking move icon
+        if (moveListener != null) {
+            holder.btnMove.setOnClickListener(v -> {
+                int pos = holder.getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    moveListener.onPhotoMove(pos);
+                }
+            });
+        }
     }
 
     @Override
@@ -98,12 +118,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         ImageView imageView;
         TextView tvName;
         ImageButton btnDelete;
+        ImageButton btnMove;
 
         public PhotoHolder(View v) {
             super(v);
             imageView = v.findViewById(R.id.imageThumb);
             tvName = v.findViewById(R.id.tvPhotoName);
             btnDelete = v.findViewById(R.id.btnDeletePhoto);
+            btnMove = v.findViewById(R.id.btnMovePhoto);
         }
     }
 }

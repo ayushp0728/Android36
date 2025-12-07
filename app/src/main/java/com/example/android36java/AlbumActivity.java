@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android36java.model.Album;
 import com.example.android36java.model.DataStore;
@@ -40,7 +41,7 @@ public class AlbumActivity extends AppCompatActivity {
         // Optional: keep action bar title in addition to header text
         setTitle(album.getName());
 
-        // 🔹 Set the header TextView to the album's name
+        // Set the header TextView to the album's name
         TextView header = findViewById(R.id.tvAlbumHeader);
         header.setText(album.getName());
 
@@ -49,9 +50,17 @@ public class AlbumActivity extends AppCompatActivity {
         photoAdapter = new PhotoAdapter(album.getPhotos());
         rv.setAdapter(photoAdapter);
 
+        // Click photo -> open photo (stub for now)
         photoAdapter.setOnPhotoClickListener(pos -> {
-            showPhotoOptionsDialog(pos);
+            // TODO: later open PhotoViewActivity with this photo
+            // For now, intentionally does nothing.
         });
+
+        // Click trash icon -> delete photo
+        photoAdapter.setOnPhotoDeleteListener(this::deletePhoto);
+
+        // Click move icon -> move photo dialog
+        photoAdapter.setOnPhotoMoveListener(this::movePhoto);
 
         Button add = findViewById(R.id.btnAddPhoto);
         add.setOnClickListener(v -> {
@@ -90,50 +99,35 @@ public class AlbumActivity extends AppCompatActivity {
         }
     }
 
-    private void showPhotoOptionsDialog(int pos) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Photo Options");
-
-        String[] options = {"View Photo", "Delete Photo", "Move Photo"};
-
-        builder.setItems(options, (dialog, which) -> {
-            switch (which) {
-                case 0:
-                    // For Person B to handle later:
-                    // open PhotoViewActivity (not implemented yet)
-                    break;
-
-                case 1:
-                    deletePhoto(pos);
-                    break;
-
-                case 2:
-                    movePhoto(pos);
-                    break;
-            }
-        });
-
-        builder.show();
-    }
-
     private void movePhoto(int pos) {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle("Move photo to:");
 
         ArrayList<Album> all = DataStore.getInstance().getAlbums();
+        ArrayList<Album> choices = new ArrayList<>();
         ArrayList<String> names = new ArrayList<>();
-        for (Album a : all) names.add(a.getName());
+
+        // Exclude current album from move targets
+        for (Album a : all) {
+            if (a != album) {
+                choices.add(a);
+                names.add(a.getName());
+            }
+        }
+
+        if (choices.isEmpty()) {
+            Toast.makeText(this, "No other albums to move to", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         b.setItems(names.toArray(new String[0]), (dialog, which) -> {
             Photo photo = album.getPhotos().get(pos);
-            Album target = all.get(which);
+            Album target = choices.get(which);
 
-            if (target != album) {
-                target.addPhoto(photo);
-                album.removePhoto(photo);
-                DataStore.getInstance().save(this);
-                photoAdapter.notifyDataSetChanged();
-            }
+            target.addPhoto(photo);
+            album.removePhoto(photo);
+            DataStore.getInstance().save(this);
+            photoAdapter.notifyDataSetChanged();
         });
 
         b.show();

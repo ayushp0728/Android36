@@ -18,7 +18,7 @@
         android:scaleType="centerCrop"
         android:background="#EEEEEE" />
 
-    <!-- Filename + delete icon -->
+    <!-- Filename + move + delete icons -->
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -36,6 +36,18 @@
             android:maxLines="1"
             android:ellipsize="end" />
 
+        <!-- Move photo icon -->
+        <ImageButton
+            android:id="@+id/btnMovePhoto"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_menu_set_as"
+            android:contentDescription="Move photo"
+            android:layout_marginEnd="4dp" />
+
+        <!-- Delete photo icon -->
         <ImageButton
             android:id="@+id/btnDeletePhoto"
             android:layout_width="20dp"
