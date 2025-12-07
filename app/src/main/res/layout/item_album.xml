@@ -1,32 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:padding="16dp"
-    android:gravity="center_vertical"
-    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_album_card"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_margin="4dp">
 
-    <TextView
-        android:id="@+id/tvAlbumName"
-        android:textSize="18sp"
-        android:textColor="@android:color/black"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"/>
+    <!-- Album thumbnail -->
+    <ImageView
+        android:id="@+id/imageAlbumThumb"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:background="#EEEEEE" />
 
-    <ImageButton
-        android:id="@+id/btnRename"
-        android:src="@android:drawable/ic_menu_edit"
-        android:background="@android:color/transparent"
-        android:layout_width="48dp"
-        android:layout_height="48dp"/>
+    <!-- Name + action icons row -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="6dp">
 
-    <ImageButton
-        android:id="@+id/btnDelete"
-        android:src="@android:drawable/ic_menu_delete"
-        android:background="@android:color/transparent"
-        android:layout_width="48dp"
-        android:layout_height="48dp"/>
+        <TextView
+            android:id="@+id/tvAlbumName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- Rename -->
+        <ImageButton
+            android:id="@+id/btnRename"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/rounded_button"
+            android:src="@android:drawable/ic_menu_edit"
+            android:scaleType="centerInside"
+            android:padding="3dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="Rename album" />
+
+        <!-- Delete -->
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/rounded_button"
+            android:src="@android:drawable/ic_menu_delete"
+            android:scaleType="centerInside"
+            android:padding="3dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="Delete album" />
+
+    </LinearLayout>
 
 </LinearLayout>

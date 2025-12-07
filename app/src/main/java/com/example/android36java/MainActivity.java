@@ -3,6 +3,8 @@ package com.example.android36java;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         DataStore.getInstance().load(this);
 
         RecyclerView rv = findViewById(R.id.recyclerAlbums);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setLayoutManager(new GridLayoutManager(this, 3));
 
         albumAdapter = new AlbumAdapter(DataStore.getInstance().getAlbums());
         rv.setAdapter(albumAdapter);
