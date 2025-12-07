@@ -1,20 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnAddPhoto"
+    <!-- Top toolbar (same as main screen) -->
+    <RelativeLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Photo" />
+        android:layout_height="56dp"
+        android:background="#6750a4"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerPhotos"
+        <TextView
+            android:id="@+id/tvToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Photos Gallery"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="22sp" />
+
+        <ImageButton
+            android:id="@+id/btnToolbarSearch"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/rounded_button"
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            android:src="@android:drawable/ic_menu_search"
+            android:tint="#6750a4"
+            android:contentDescription="Search"
+            android:focusable="true"
+            android:clickable="true" />
+    </RelativeLayout>
+
+    <!-- Content area -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent">
+
+        <!-- Header row: album name + Add Photo button -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <!-- Album name header (h3-ish) -->
+            <TextView
+                android:id="@+id/tvAlbumHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Album Name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <!-- White rounded button with "+" for Add Photo -->
+            <Button
+                android:id="@+id/btnAddPhoto"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/rounded_button"
+                android:text="+"
+                android:textSize="20dp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Photos grid -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerPhotos"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 
 </LinearLayout>

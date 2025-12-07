@@ -11,9 +11,9 @@ import android.content.Intent;
 import com.example.android36java.model.Album;
 import com.example.android36java.model.DataStore;
 import com.example.android36java.model.Photo;
+
 import android.app.AlertDialog;
 import android.net.Uri;
-
 
 import java.util.ArrayList;
 
@@ -22,6 +22,7 @@ public class AlbumActivity extends AppCompatActivity {
     private Album album;
     private PhotoAdapter photoAdapter;
     private static final int REQUEST_PICK = 1;
+
     private void deletePhoto(int pos) {
         album.getPhotos().remove(pos);
         DataStore.getInstance().save(this);
@@ -42,11 +43,16 @@ public class AlbumActivity extends AppCompatActivity {
         rv.setLayoutManager(new GridLayoutManager(this, 3));
         photoAdapter = new PhotoAdapter(album.getPhotos());
         rv.setAdapter(photoAdapter);
+
+        // click on photo card -> options dialog (view/delete/move)
         photoAdapter.setOnPhotoClickListener(pos -> {
             showPhotoOptionsDialog(pos);
         });
 
-
+        // click on trash icon -> delete immediately
+        photoAdapter.setOnPhotoDeleteListener(pos -> {
+            deletePhoto(pos);
+        });
 
         Button add = findViewById(R.id.btnAddPhoto);
         add.setOnClickListener(v -> {
