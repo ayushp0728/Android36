@@ -14,10 +14,10 @@
     <ImageView
         android:id="@+id/imageAlbumThumb"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_gallery"
-        android:background="#EEEEEE" />
+        android:background="@drawable/rounded_image_bg"
+        android:clipToOutline="true" />
 
     <!-- Name + action icons row -->
     <LinearLayout

@@ -14,9 +14,10 @@
     <ImageView
         android:id="@+id/imageThumb"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         android:scaleType="centerCrop"
-        android:background="#EEEEEE" />
+        android:background="@drawable/rounded_image_bg"
+        android:clipToOutline="true" />
 
     <!-- Filename + move + delete icons -->
     <LinearLayout
