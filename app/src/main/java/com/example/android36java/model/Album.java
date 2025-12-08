@@ -34,14 +34,41 @@ public class Album implements Serializable {
         return photos;
     }
 
+    /**
+     * Check if this album already contains a photo with the same URI.
+     */
     public boolean containsPhoto(Photo p) {
-        return photos.contains(p);
+        if (p == null || p.getUriString() == null) {
+            return false;
+        }
+        String uri = p.getUriString();
+
+        for (Photo existing : photos) {
+            if (existing.getUriString() != null &&
+                    existing.getUriString().equalsIgnoreCase(uri)) {
+                return true;
+            }
+        }
+        return false;
     }
 
+    /**
+     * Add a photo to this album, preventing duplicates based on URI.
+     *
+     * @return true if added, false if a photo with same URI already exists
+     */
     public boolean addPhoto(Photo p) {
-        // prevent duplicate objects within this album
-        if (containsPhoto(p)) return false;
-        return photos.add(p);
+        if (p == null || p.getUriString() == null) {
+            return false;
+        }
+
+        if (containsPhoto(p)) {
+            // duplicate, don't add
+            return false;
+        }
+
+        photos.add(p);
+        return true;
     }
 
     public boolean removePhoto(Photo p) {

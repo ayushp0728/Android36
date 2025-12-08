@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android36java.model.Album;
 import com.example.android36java.model.DataStore;
@@ -82,7 +83,6 @@ public class AlbumActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // In case photos were changed while this album was in background
         if (photoAdapter != null) {
             photoAdapter.notifyDataSetChanged();
         }
@@ -102,7 +102,17 @@ public class AlbumActivity extends AppCompatActivity {
 
             getContentResolver().takePersistableUriPermission(uri, flags);
 
-            album.getPhotos().add(new Photo(uri.toString()));
+            Photo newPhoto = new Photo(uri.toString());
+
+            // ✅ use Album.addPhoto() to enforce "no duplicates in this album"
+            boolean added = album.addPhoto(newPhoto);
+            if (!added) {
+                Toast.makeText(this,
+                        "This photo is already in this album.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             DataStore.getInstance().save(this);
             photoAdapter.notifyDataSetChanged();
         }
@@ -134,7 +144,15 @@ public class AlbumActivity extends AppCompatActivity {
             }
 
             if (target != null && target != album) {
-                target.addPhoto(photo);
+                // ✅ respect duplicate rule in target album as well
+                boolean added = target.addPhoto(photo);
+                if (!added) {
+                    Toast.makeText(this,
+                            "Photo already exists in \"" + target.getName() + "\"",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 album.removePhoto(photo);
                 DataStore.getInstance().save(this);
                 photoAdapter.notifyDataSetChanged();
