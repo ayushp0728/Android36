@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageButton; // ✅ NEW IMPORT
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.android36java.model.Album;
@@ -41,7 +41,7 @@ public class AlbumActivity extends AppCompatActivity {
 
         setTitle(album.getName());
 
-        // 🔍 SEARCH BUTTON WIRING (NEW)
+        // Search button in toolbar
         ImageButton btnSearch = findViewById(R.id.btnToolbarSearch);
         btnSearch.setOnClickListener(v -> {
             Intent intent = new Intent(AlbumActivity.this, SearchActivity.class);
@@ -66,6 +66,9 @@ public class AlbumActivity extends AppCompatActivity {
 
         // Hook delete icon to deletePhoto()
         photoAdapter.setOnPhotoDeleteListener(this::deletePhoto);
+
+        // 🔹 Hook move icon to movePhoto()
+        photoAdapter.setOnPhotoMoveListener(this::movePhoto);
 
         Button add = findViewById(R.id.btnAddPhoto);
         add.setOnClickListener(v -> {
@@ -104,8 +107,8 @@ public class AlbumActivity extends AppCompatActivity {
         ArrayList<Album> all = DataStore.getInstance().getAlbums();
         ArrayList<String> names = new ArrayList<>();
         for (Album a : all) {
-            if (a != album) {
-                names.add(a.getName()); // ✅ exclude current album
+            if (a != album) { // exclude current album
+                names.add(a.getName());
             }
         }
 
