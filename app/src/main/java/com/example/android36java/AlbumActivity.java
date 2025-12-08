@@ -67,7 +67,7 @@ public class AlbumActivity extends AppCompatActivity {
         // Hook delete icon to deletePhoto()
         photoAdapter.setOnPhotoDeleteListener(this::deletePhoto);
 
-        // 🔹 Hook move icon to movePhoto()
+        // Hook move icon to movePhoto()
         photoAdapter.setOnPhotoMoveListener(this::movePhoto);
 
         Button add = findViewById(R.id.btnAddPhoto);
@@ -77,6 +77,15 @@ public class AlbumActivity extends AppCompatActivity {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             startActivityForResult(intent, REQUEST_PICK);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // In case photos were changed while this album was in background
+        if (photoAdapter != null) {
+            photoAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

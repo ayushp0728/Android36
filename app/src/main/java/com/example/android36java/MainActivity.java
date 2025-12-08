@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         DataStore.getInstance().load(this);
 
-        // 🔍 SEARCH BUTTON WIRING (NEW)
+        // 🔍 SEARCH BUTTON WIRING
         ImageButton btnSearch = findViewById(R.id.btnToolbarSearch);
         btnSearch.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SearchActivity.class);
@@ -115,6 +115,15 @@ public class MainActivity extends AppCompatActivity {
             builder.setNegativeButton("Cancel", null);
             builder.show();
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // When coming back from AlbumActivity, thumbnails / names may have changed
+        if (albumAdapter != null) {
+            albumAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
