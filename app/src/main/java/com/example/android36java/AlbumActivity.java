@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton; // ✅ NEW IMPORT
 import android.widget.TextView;
 
 import com.example.android36java.model.Album;
@@ -39,6 +40,13 @@ public class AlbumActivity extends AppCompatActivity {
         album = DataStore.getInstance().getAlbums().get(albumIndex);
 
         setTitle(album.getName());
+
+        // 🔍 SEARCH BUTTON WIRING (NEW)
+        ImageButton btnSearch = findViewById(R.id.btnToolbarSearch);
+        btnSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(AlbumActivity.this, SearchActivity.class);
+            startActivity(intent);
+        });
 
         TextView header = findViewById(R.id.tvAlbumHeader);
         header.setText(album.getName());
@@ -72,26 +80,23 @@ public class AlbumActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_PICK && resultCode == RESULT_OK) {
-            if (data != null) {
+        if (requestCode == REQUEST_PICK && resultCode == RESULT_OK && data != null) {
 
-                Uri uri = data.getData();
+            Uri uri = data.getData();
 
-                final int flags = data.getFlags()
-                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            final int flags = data.getFlags() &
+                    (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                getContentResolver().takePersistableUriPermission(uri, flags);
+            getContentResolver().takePersistableUriPermission(uri, flags);
 
-                album.getPhotos().add(new Photo(uri.toString()));
-                DataStore.getInstance().save(this);
-                photoAdapter.notifyDataSetChanged();
-            }
+            album.getPhotos().add(new Photo(uri.toString()));
+            DataStore.getInstance().save(this);
+            photoAdapter.notifyDataSetChanged();
         }
     }
 
-    // movePhoto(...) and showPhotoOptionsDialog(...) can stay if you still
-    // use them from a move icon elsewhere; otherwise they’re safe to delete.
+    // Move photo dialog (used by move icon)
     private void movePhoto(int pos) {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle("Move photo to:");
@@ -99,15 +104,14 @@ public class AlbumActivity extends AppCompatActivity {
         ArrayList<Album> all = DataStore.getInstance().getAlbums();
         ArrayList<String> names = new ArrayList<>();
         for (Album a : all) {
-            if (a != album) {        // exclude current album from options
-                names.add(a.getName());
+            if (a != album) {
+                names.add(a.getName()); // ✅ exclude current album
             }
         }
 
         b.setItems(names.toArray(new String[0]), (dialog, which) -> {
             Photo photo = album.getPhotos().get(pos);
 
-            // find target by name (since we filtered)
             Album target = null;
             String chosenName = names.get(which);
             for (Album a : all) {

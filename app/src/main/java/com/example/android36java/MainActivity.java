@@ -1,22 +1,20 @@
 package com.example.android36java;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.content.Intent;
-
 
 import com.example.android36java.model.Album;
 import com.example.android36java.model.DataStore;
+
 import android.app.AlertDialog;
 import android.widget.EditText;
 import android.widget.Toast;
-
 
 import java.util.ArrayList;
 
@@ -34,10 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setPositiveButton("OK", (dialog, which) -> {
             String newName = input.getText().toString().trim();
-
             if (newName.isEmpty()) return;
 
-            // prevent duplicate
             for (Album other : DataStore.getInstance().getAlbums()) {
                 if (other != album && other.getName().equalsIgnoreCase(newName)) {
                     Toast.makeText(this, "Album exists", Toast.LENGTH_SHORT).show();
@@ -54,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,18 +57,25 @@ public class MainActivity extends AppCompatActivity {
 
         DataStore.getInstance().load(this);
 
+        // 🔍 SEARCH BUTTON WIRING (NEW)
+        ImageButton btnSearch = findViewById(R.id.btnToolbarSearch);
+        btnSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            startActivity(intent);
+        });
+
         RecyclerView rv = findViewById(R.id.recyclerAlbums);
         rv.setLayoutManager(new GridLayoutManager(this, 3));
 
         albumAdapter = new AlbumAdapter(DataStore.getInstance().getAlbums());
         rv.setAdapter(albumAdapter);
-        albumAdapter.setOnAlbumClickListener(position -> {
 
+        albumAdapter.setOnAlbumClickListener(position -> {
             Intent intent = new Intent(MainActivity.this, AlbumActivity.class);
             intent.putExtra("albumIndex", position);
             startActivity(intent);
-
         });
+
         albumAdapter.setOnRenameListener(pos -> {
             Album a = DataStore.getInstance().getAlbums().get(pos);
             showRenameDialog(a);
@@ -98,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 String name = input.getText().toString().trim();
                 if (name.isEmpty()) return;
 
-                // prevent duplicate
                 for (Album a : DataStore.getInstance().getAlbums()) {
                     if (a.getName().equalsIgnoreCase(name)) {
                         Toast.makeText(this, "Album exists", Toast.LENGTH_SHORT).show();
@@ -115,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
             builder.show();
         });
     }
-
 
     @Override
     protected void onPause() {
