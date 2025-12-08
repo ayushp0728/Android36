@@ -1,5 +1,6 @@
 package com.example.android36java;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android36java.model.Album;
+import com.example.android36java.model.Photo;
 
 import java.util.List;
 
@@ -17,13 +19,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
     private List<Album> albums;
 
-    // Click interfaces
+    // Click open album
     public interface OnAlbumClickListener {
         void onAlbumClick(int position);
     }
+
     public interface OnRenameListener {
         void onRename(int pos);
     }
+
     public interface OnDeleteListener {
         void onDelete(int pos);
     }
@@ -60,27 +64,45 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         Album a = albums.get(pos);
         holder.tvName.setText(a.getName());
 
-        // Open album when clicking thumbnail OR name OR whole item
-        View.OnClickListener openListener = v -> {
-            if (albumClickListener != null) {
-                albumClickListener.onAlbumClick(holder.getAdapterPosition());
-            }
-        };
-
-        holder.itemView.setOnClickListener(openListener);
-        holder.tvName.setOnClickListener(openListener);
-        holder.imageThumb.setOnClickListener(openListener);
-
-        // Rename
-        if (renameListener != null) {
-            holder.btnRename.setOnClickListener(v ->
-                    renameListener.onRename(holder.getAdapterPosition()));
+        // --- Set thumbnail to most recent photo if available ---
+        if (!a.getPhotos().isEmpty()) {
+            // last photo in list = most recently added
+            Photo last = a.getPhotos().get(a.getPhotos().size() - 1);
+            Uri uri = Uri.parse(last.getUriString());
+            holder.imageThumb.setImageURI(uri);
+        } else {
+            // no photos -> fall back to placeholder icon
+            holder.imageThumb.setImageResource(android.R.drawable.ic_menu_gallery);
         }
 
-        // Delete
+        // open album when clicking the whole card
+        holder.itemView.setOnClickListener(v -> {
+            if (albumClickListener != null) {
+                int adapterPos = holder.getAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    albumClickListener.onAlbumClick(adapterPos);
+                }
+            }
+        });
+
+        // rename icon
+        if (renameListener != null) {
+            holder.btnRename.setOnClickListener(v -> {
+                int adapterPos = holder.getAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    renameListener.onRename(adapterPos);
+                }
+            });
+        }
+
+        // delete icon
         if (deleteListener != null) {
-            holder.btnDelete.setOnClickListener(v ->
-                    deleteListener.onDelete(holder.getAdapterPosition()));
+            holder.btnDelete.setOnClickListener(v -> {
+                int adapterPos = holder.getAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    deleteListener.onDelete(adapterPos);
+                }
+            });
         }
     }
 
