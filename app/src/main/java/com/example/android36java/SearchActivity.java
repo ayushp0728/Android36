@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView;
-import android.view.View;   // <-- needed for onItemSelected(...) parameter
+import android.view.View;   // needed for onItemSelected(...) parameter
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -252,9 +252,19 @@ public class SearchActivity extends AppCompatActivity {
         resultAdapter.notifyDataSetChanged();
     }
 
+    // 🔹 PREFIX, CASE-INSENSITIVE MATCH
     private boolean matchesTag(Photo p, Tag query) {
+        String qType = query.getType().toLowerCase();
+        String qValue = query.getValue().toLowerCase();
+
         for (Tag t : p.getTags()) {
-            if (t.equals(query)) {
+            // same type (person/location)
+            if (!t.getType().equalsIgnoreCase(qType)) {
+                continue;
+            }
+
+            // prefix match on value (case-insensitive)
+            if (t.getValue().toLowerCase().startsWith(qValue)) {
                 return true;
             }
         }
