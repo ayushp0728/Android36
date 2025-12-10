@@ -18,7 +18,7 @@ git clone https://github.com/ayushp0728/Android36.git
 
 
 
-# GenAI Usage Summary – Android Photos App
+## GenAI Usage Summary – Android Photos App
 
 This document explains **how GenAI tools were used** during development of the Android Photos app, in accordance with the assignment guidelines.
 
