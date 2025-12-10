@@ -14,8 +14,8 @@ git clone https://github.com/ayushp0728/Android36.git
 
 2. Afterwards, install all required dependencies and ensure that you have the correct emulator set. 
 
-** Please note that due to prior issues, we had to restart our project and rename it to Android36Java internally. So, copying over the files will likely create some kind of break if you are expecting Android<group_number>. Sorry for the trouble. 
-**
+#### Please note that due to prior issues, we had to restart our project and rename it to Android36Java internally. So, copying over the files will likely create some kind of break if you are expecting Android<group_number>. Sorry for the trouble. 
+
 
 
 ## Notes on Gen AI Usage
