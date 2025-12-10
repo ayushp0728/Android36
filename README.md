@@ -17,6 +17,7 @@
 - “How do I handle Android content URIs?”
 - “How do I persist URI permissions?”
 - “How do I open PhotoViewActivity from AlbumActivity?”
+- "How would I go about creating a prefix-based search feature"
 
 ### There were cases where Gen AI (we used ChatGPT) was able to provide details on implementation, and generated code within examples. This code was provided in the: 
 - RecyclerView
