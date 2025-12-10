@@ -2,17 +2,20 @@
 
 - This ReadMe file contains the details of the project, how to build/execute the app, and notes on GenAI use. 
 
-# Building and Running the App
+## Building and Running the App
 - Since this app was done natively without importing any libraries, this should not be a difficult process.
 
-Start by cloning the repository. 
+1. Start by cloning the repository. 
 ```bash
 
 git clone https://github.com/ayushp0728/Android36.git
 
 ```
 
-Afterwards, install all required dependencies and ensure that you have the correct emulator set. Please note that due to prior issues, we had to restart our project and rename it to Android36Java internally. So, copying over the files will likely create some kind of break if you are expecting Android<group_number>. Sorry for the trouble. 
+2. Afterwards, install all required dependencies and ensure that you have the correct emulator set. 
+
+** Please note that due to prior issues, we had to restart our project and rename it to Android36Java internally. So, copying over the files will likely create some kind of break if you are expecting Android<group_number>. Sorry for the trouble. 
+**
 
 
 ## Notes on Gen AI Usage
